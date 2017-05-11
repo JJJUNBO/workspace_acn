@@ -1,0 +1,40 @@
+package dvmrp;
+
+public class controller implements Runnable{
+
+	int host[];
+	int router[];
+	int lan[];
+
+    
+	
+	public controller(int[] host, int[] router, int[] lan) {
+		super();
+		this.host = host;
+		this.router = router;
+		this.lan = lan;
+	}
+
+
+
+	public void run() {
+		try{
+	      	 long now = (System.currentTimeMillis());
+	      	 boolean flag = true;      	 
+	      	 System.out.println("control start: "+now);
+	      	 for(int i :host){
+	      	 open_host hostx = new open_host(i);
+	      	 new Thread(hostx).start();
+	      	 }
+	      	 for(int i : router){
+	      		router_open routx = new router_open(i);
+	      		new Thread(routx).start();
+	      	 }
+	      	 
+		}
+		catch(Exception e){
+			
+		}
+	}	
+	
+}

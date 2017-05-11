@@ -1,0 +1,39 @@
+import java.io.File;
+import java.io.RandomAccessFile;
+
+public class host_process implements Runnable{
+	
+	int host_id;
+	int lan_id;
+	String type;
+	int start_time;
+	int period;
+	
+
+
+	public host_process(int host_id, int lan_id, String type, int start_time, int period) {
+		super();
+		this.host_id = host_id;
+		this.lan_id = lan_id;
+		this.type = type;
+		this.start_time = start_time;
+		this.period = period;
+	}
+
+	public void run() {
+		
+          try{
+        	  
+        	  RandomAccessFile hout = new RandomAccessFile("hout"+host_id,"rw");
+        	  
+          
+          }
+         catch(Exception e){
+        	 
+        	 System.out.println();
+         }
+		
+		
+	}
+
+}

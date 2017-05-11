@@ -1,0 +1,10 @@
+
+public class host {
+	int host_id;
+	int lan_id;
+	String type;
+	int start_time;
+	int period;
+	
+
+}

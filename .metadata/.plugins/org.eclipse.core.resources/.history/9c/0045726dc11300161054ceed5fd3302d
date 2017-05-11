@@ -1,0 +1,155 @@
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.util.HashMap;
+
+public class router_process implements Runnable{
+	
+	int router_id;
+	int lan[];
+	int nextlan[];
+	int receiver[]= new int[10];
+	long prev_len[] = new long[10];
+    HashMap<Integer,int[]> routermap = new HashMap<Integer,int[]>();
+    HashMap<Integer,int[]> nextrouter = new HashMap<Integer,int[]>();
+	public router_process(int router_id, int[] lan) {
+		super();
+		this.router_id = router_id;
+		this.lan = lan;
+	}
+
+
+	public void run() {
+		try{
+      	   long now = (System.currentTimeMillis());
+      	   boolean flag = true;
+      	   
+
+			RandomAccessFile rout = new RandomAccessFile("rout"+router_id,"rw");
+			for(int x : lan){
+				int dis[] = new int[10];
+      	        int next[] = new int[10];
+				RandomAccessFile lanfile = new RandomAccessFile("lan"+x,"rw");
+				for(int i=0;i<=9;i++){
+					prev_len[i]=0;
+					receiver[i]=0;
+					if(i!=x){
+						nextlan[i]=10;
+						dis[i]=10;
+						next[i]=10;
+					}
+					else {	
+						nextlan[i]=x;
+						dis[i]=0;
+						next[i]=router_id;
+					}
+					
+					
+			}
+				routermap.put(x, dis);
+				nextrouter.put(x, next);
+
+
+			}
+
+        
+        int i=0;
+        while(flag){
+        	Thread.sleep(1000);i++;
+        	
+            	
+    	        for(int x : routermap.keySet()){
+				RandomAccessFile lanfile = new RandomAccessFile("lan"+x,"rw");
+				if(i%5==0){
+					int tmp[] = routermap.get(x);
+					int tmp2[] = nextrouter.get(x);
+                    rout.seek(rout.length());
+				    rout.writeBytes("DV "+x+" "+router_id+" "+tmp[0]+" "+tmp2[0]+" "+tmp[1]+" "
+				    		+tmp2[1]+" "+tmp[2]+" "+tmp2[2]+" "+tmp[3]
+						+" "+tmp2[3]+" "+tmp[4]+" "+tmp2[4]+" "+tmp[5]+" "+tmp2[5]+" "+tmp[6]+" "
+						+tmp2[6]+" "+tmp[7]+" "+tmp2[7]+" "+tmp[8]+" "+tmp2[8]+" "+tmp[9]+" "+tmp2[9]+"\n");
+				}
+				long len = lanfile.length();
+				
+				if(prev_len[x]!=len){
+					lanfile.seek(prev_len[x]);
+					while(lanfile.getFilePointer()!=len){
+						String line = lanfile.readLine();
+						
+						if(line.contains("DV")){
+							int r_id = Integer.parseInt(line.substring(5,6));
+							if(r_id!=router_id){
+							  String sub = line.substring(7);
+							  String dis_rtr[]=sub.split(" ");
+							  int tmpdis[] =  new int[10];
+							  int tmpnext[] =  new int[10];
+							  int j=0,k=0;							 
+							  for(String s : dis_rtr){
+								  if(j<=k){
+									  tmpdis[j]=Integer.parseInt(s);
+									  j++;
+									  
+								  }
+								  else{
+									  tmpnext[k]=Integer.parseInt(s);
+									  k++;
+								  }
+								  
+							  }
+							  int tmp[] = routermap.get(x);
+							  int tmp2[] = nextrouter.get(x);
+							  int dis_to_x = tmpdis[x];
+							  int between = dis_to_x+tmp[x]+1;
+							  for(int lanx=0;i<=9;i++){
+								  if(between+tmpdis[lanx]<=tmp[lanx]){
+									  tmp[lanx]=between+tmpdis[lanx];
+									  tmp2[lanx]=r_id;
+										routermap.put(x, tmp);
+										nextrouter.put(x, tmp2);
+										nextlan[lanx]=x;
+								  }
+							  }
+							  
+							}
+							
+
+						}
+						else if(line.contains("receiver")){
+							int lan_id = Integer.parseInt(line.substring(line.indexOf(" ")+1));
+							receiver[lan_id]=1;
+						}
+						else{
+							int lan_id = Integer.parseInt(line.substring(line.indexOf(" ")+1),line.indexOf(" ")+2);
+							int host_id = Integer.parseInt(line.substring(line.indexOf(" ")+3),line.indexOf(" ")+4);
+							for(int n=0;n<=9;n++){
+								if(receiver[n]==1&&lan_id!=x){
+									lanfile = new RandomAccessFile("lan"+nextlan[n],"rw");
+									lanfile.seek(lanfile.length());
+									lanfile.writeBytes("data "+nextlan[n]+" "+host_id+"\n");
+								}
+							}
+							
+						}
+					}
+					prev_len[x]=len;
+					
+				}
+				int ct = (int) ((System.currentTimeMillis()-now)/1000);
+				System.out.println("current second: "+ct+"s");
+      		    if(ct>=100)flag=false;
+
+        	}
+    	       
+        	
+        }
+        }
+       catch(Exception e){
+      	 
+      	 System.out.println(e);
+       }
+		
+		
+	}
+	
+	
+
+}

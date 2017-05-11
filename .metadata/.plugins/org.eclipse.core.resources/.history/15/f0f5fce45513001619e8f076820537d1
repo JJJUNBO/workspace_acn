@@ -1,0 +1,39 @@
+import java.util.Scanner;
+
+public class command {
+	
+	public static void main(String[] args) {		
+		Scanner scanner = new Scanner(System.in).useDelimiter("&");
+		String userCommand;
+		String commandtype;
+		do{
+			System.out.print("command:");		    
+			userCommand = scanner.next();
+			{
+			 if(userCommand.contains("host"))createhost(userCommand);
+			
+
+			 else System.out.println("I didn't understand the command: \"" + userCommand + "\"");
+			}
+			
+		}while(!userCommand.contains("controller"));
+	}
+
+	private static void createhost(String userCommand) {
+		
+		int start =  userCommand.indexOf(" ");
+		//int host_id = Integer.parseInt(userCommand.substring(start,start+1));
+		//int lan_id = Integer.parseInt(userCommand.substring(start,start+1));
+		String type;
+		if(userCommand.contains("sender"))type="sender";
+		else type = "receiver";
+		//System.out.println(host_id);
+		//System.out.println(lan_id);
+		System.out.println(start);
+		System.out.println(type);
+		//host_process hostX =  new host_process(host_id,lan_id,type,0,0);
+		//new Thread(hostX).start();
+		
+	}
+
+}

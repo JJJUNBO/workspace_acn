@@ -1,0 +1,23 @@
+
+public class router_open implements Runnable{
+int router_id;
+long prev_len=0;
+
+
+	public void run() {
+		try{
+			
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
+		
+	}
+
+
+	public router_open(int router_id) {
+		super();
+		this.router_id = router_id;
+	}
+
+}

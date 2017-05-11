@@ -1,0 +1,34 @@
+
+public class controller implements Runnable{
+
+	int host[];
+	int router[];
+	int lan[];
+
+    
+	
+	public controller(int[] host, int[] router, int[] lan) {
+		super();
+		this.host = host;
+		this.router = router;
+		this.lan = lan;
+	}
+
+
+
+	public void run() {
+		try{
+	      	 long now = (System.currentTimeMillis());
+	      	 boolean flag = true;      	 
+	      	 System.out.println(now);
+	      	 open_host host1 = new open_host(1);
+	      	 new Thread(host1).start();
+	      		 
+	      	 
+		}
+		catch(Exception e){
+			
+		}
+	}	
+	
+}

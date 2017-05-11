@@ -1,0 +1,65 @@
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.sql.Date;
+
+public class host_process implements Runnable{
+	
+	int host_id;
+	int lan_id;
+	String type;
+	int start_time;
+	int period;
+	
+
+
+	public host_process(int host_id, int lan_id, String type, int start_time, int period) {
+		super();
+		this.host_id = host_id;
+		this.lan_id = lan_id;
+		this.type = type;
+		this.start_time = start_time;
+		this.period = period;
+	}
+
+	public void run() {
+		
+          try{
+        	  
+        	  RandomAccessFile hout = new RandomAccessFile("hout"+host_id,"rw");
+        	  RandomAccessFile hin = new RandomAccessFile("hin"+host_id,"rw");
+        	 if(type.equals("receiver")){
+       		  hout.writeBytes("receiver "+host_id+"\n");
+        		 while(true){
+        		  Thread.sleep(10000);
+        		  hout.writeBytes("receiver "+host_id+"\n");
+        		     		  
+        	  }
+
+        	 }
+        	 if(type.equals("sender")){
+        	  long now = (System.currentTimeMillis());
+       		  Thread.sleep(start_time*1000);
+        	  hout.writeBytes("data "+lan_id+" "+host_id+"\n"); 
+        	  boolean flag = true;
+        	  int i=0;
+    		  System.out.println(period*1000);
+
+        	 /** while(flag){
+            	  //hout.writeBytes("data "+lan_id+" "+host_id+"\n");  
+        		  System.out.println(i++);
+            	  Thread.sleep(period*1000);
+            	  if(System.currentTimeMillis()-now>=100000)flag=false;
+            	  
+        	  }**/
+        	 }
+          
+          }
+         catch(Exception e){
+        	 
+        	 System.out.println(e);
+         }
+		
+		
+	}
+
+}

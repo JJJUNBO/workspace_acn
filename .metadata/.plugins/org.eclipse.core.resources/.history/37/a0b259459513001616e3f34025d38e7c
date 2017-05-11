@@ -1,0 +1,24 @@
+
+public class controller implements Runnable{
+
+	int host[];
+	int router[];
+	int lan[];
+
+    
+	
+	public controller(int[] host, int[] router, int[] lan) {
+		super();
+		this.host = host;
+		this.router = router;
+		this.lan = lan;
+	}
+
+
+
+	public void run() {
+		
+		
+	}	
+	
+}
